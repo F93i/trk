@@ -1,0 +1,463 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>خفايف فود ترك</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&family=Lalezar&display=swap">
+<style>
+/* Layout: one narrow column, like a menu board held in the hand. Sticky category chips, item rows with add buttons, a bottom order bar that opens a WhatsApp order sheet. Dark-first, same palette as the printed menu. */
+:root {
+  --bg: #1E1A17;
+  --surface: #2A2420;
+  --fg: #FFF1D6;
+  --muted: #C2B39C;
+  --accent: #F4A71D;
+  --on-accent: #1E1A17;
+  --price: #F4A71D;
+  --red: #C93A22;
+  --on-red: #FFF1D6;
+  --line: rgba(255, 241, 214, 0.18);
+  --scrim: rgba(0, 0, 0, 0.62);
+  --stripe: #FFF1D6;
+  --font-display: 'Lalezar', 'Cairo', 'Tahoma', sans-serif;
+  --font-body: 'Cairo', 'Tahoma', sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #FFF8EC;
+    --surface: #FFFFFF;
+    --fg: #2A221C;
+    --muted: #6B5E50;
+    --price: #9A5B00;
+    --line: rgba(42, 34, 28, 0.18);
+    --scrim: rgba(30, 26, 23, 0.55);
+    --stripe: #F4A71D;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #FFF8EC;
+  --surface: #FFFFFF;
+  --fg: #2A221C;
+  --muted: #6B5E50;
+  --price: #9A5B00;
+  --line: rgba(42, 34, 28, 0.18);
+  --scrim: rgba(30, 26, 23, 0.55);
+  --stripe: #F4A71D;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  direction: rtl;
+  padding-bottom: 110px;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 10;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.wrap {
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.awning {
+  height: 22px;
+  background: repeating-linear-gradient(90deg, var(--red) 0 44px, var(--stripe) 44px 88px);
+}
+.hero { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding-block: 22px 14px; }
+.tag-pill { background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: 14px; padding: 2px 16px; border-radius: 999px; }
+h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(64px, 20vw, 96px); line-height: 1.1; text-wrap: balance; }
+.sub { margin: 0; color: var(--price); font-weight: 700; font-size: 17px; text-wrap: balance; }
+
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.chips { display: flex; justify-content: safe center; gap: 8px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-weight: 700;
+}
+.chip:hover { border-color: var(--accent); }
+
+main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding-block: 18px 8px; }
+.col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.section { background: var(--surface); border-radius: 14px; padding: 14px 18px 6px; scroll-margin-top: calc(76px + env(safe-area-inset-top, 0px)); }
+.section h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; font-family: var(--font-display); font-weight: 400; font-size: 32px; color: var(--price); }
+.section h2::before { content: ""; width: 8px; height: 26px; background: var(--red); border-radius: 4px; }
+.items { list-style: none; margin: 0; padding: 0; }
+.item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; border-top: 1px solid var(--line); }
+.item:first-child { border-top: 0; }
+.info { display: flex; flex-direction: column; min-width: 0; }
+.name { font-weight: 700; font-size: 18px; overflow-wrap: anywhere; }
+.price { color: var(--price); font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
+.price.ask { color: var(--muted); font-weight: 600; font-size: 14px; }
+.ctl { flex: none; }
+
+.btn-add {
+  min-height: 44px; min-width: 76px; padding: 0 20px;
+  border: 0; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent); font-weight: 800;
+}
+.step { display: flex; align-items: center; gap: 4px; }
+.step button {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--accent); background: transparent;
+  font-size: 22px; font-weight: 800; line-height: 1;
+}
+.step button[data-act="inc"] { background: var(--accent); color: var(--on-accent); }
+.step output { min-width: 32px; text-align: center; font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums; }
+
+.foot { color: var(--muted); font-size: 14px; text-align: center; padding-block: 8px 12px; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.bar-inner { max-width: 1080px; margin-inline: auto; display: flex; align-items: center; gap: 14px; }
+.bar-sum { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.bar-sum small { color: var(--muted); font-size: 13px; }
+.bar-sum strong { font-size: 18px; font-variant-numeric: tabular-nums; }
+.btn-main {
+  min-height: 48px; padding: 0 22px; border: 0; border-radius: 12px;
+  background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: 17px;
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none; text-align: center;
+}
+
+.overlay { position: fixed; inset: 0; z-index: 30; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; }
+.sheet {
+  width: 100%; max-width: 720px; max-height: 90%; overflow-y: auto;
+  background: var(--surface); border-radius: 18px 18px 0 0;
+  padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: flex; flex-direction: column; gap: 14px;
+}
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sheet-head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 32px; color: var(--price); }
+.btn-close { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: transparent; font-size: 20px; }
+.lines { list-style: none; margin: 0; padding: 0; }
+.line { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 10px; border-top: 1px solid var(--line); }
+.line:first-child { border-top: 0; }
+.line .info .name { font-size: 17px; }
+.total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 2px solid var(--line); padding-top: 12px; font-weight: 800; font-size: 20px; }
+.total span:last-child { color: var(--price); font-variant-numeric: tabular-nums; }
+.note-unpriced { margin: -6px 0 0; color: var(--muted); font-size: 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-weight: 700; font-size: 15px; }
+.field input, .field textarea {
+  width: 100%; min-height: 48px; padding: 10px 12px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+}
+.field textarea { min-height: 84px; resize: vertical; }
+.hint { margin: 0; color: var(--muted); font-size: 14px; text-align: center; }
+.btn-clear { align-self: center; min-height: 44px; background: transparent; border: 0; color: var(--muted); text-decoration: underline; }
+
+/* Small phones */
+@media (max-width: 380px) {
+  .chip { padding: 0 14px; }
+  .section { padding-inline: 14px; }
+  .section h2 { font-size: 28px; }
+  .name { font-size: 17px; }
+  .btn-add { min-width: 64px; padding: 0 14px; }
+  .btn-main { padding: 0 16px; font-size: 16px; }
+}
+
+/* Tablets and up: two columns of sections, order sheet becomes a centered dialog */
+@media (min-width: 760px) {
+  .hero { padding-block: 32px 20px; }
+  main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding-block: 24px 12px; }
+  .col { gap: 22px; }
+  .col > .section:last-child { flex: 1; }
+  .section { padding: 18px 24px 10px; }
+  .overlay { align-items: center; padding: 24px; }
+  .sheet { max-width: 540px; max-height: 100%; border-radius: 18px; padding: 24px; }
+  .bar-sum strong { font-size: 20px; }
+  .btn-main { min-width: 180px; }
+  .chip:hover, .btn-add:hover, .btn-main:hover { filter: brightness(1.08); }
+}
+
+/* Desktop: roomier type */
+@media (min-width: 1100px) {
+  main, .col { gap: 26px; }
+  .section h2 { font-size: 36px; }
+  .name { font-size: 19px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chip, .btn-add, .btn-main { transition: transform .12s ease; }
+  .btn-add:active, .btn-main:active { transform: scale(.97); }
+}
+</style>
+
+<div class="awning" aria-hidden="true"></div>
+
+<header class="wrap hero">
+  <span class="tag-pill">فود ترك</span>
+  <h1>خفايف</h1>
+  <p class="sub">فطائر · معجنات · سندوتشات · شاي كرك</p>
+</header>
+
+<nav class="nav" aria-label="أقسام المنيو">
+  <div class="wrap">
+    <div class="chips" id="chips"></div>
+  </div>
+</nav>
+
+<main class="wrap" id="menu"></main>
+
+<p class="wrap foot">الأسعار بالريال السعودي · اختر أصنافك ثم اضغط «عرض الطلب»</p>
+
+<div class="bar" id="bar" hidden>
+  <div class="bar-inner">
+    <div class="bar-sum" aria-live="polite">
+      <small id="barCount">٠ أصناف</small>
+      <strong id="barTotal">٠ ريال</strong>
+    </div>
+    <button type="button" class="btn-main" id="openSheet">عرض الطلب</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-head">
+      <h2 id="sheetTitle" tabindex="-1">طلبك</h2>
+      <button type="button" class="btn-close" id="closeSheet" aria-label="إغلاق">✕</button>
+    </div>
+    <ul class="lines" id="lines"></ul>
+    <div class="total"><span>الإجمالي</span><span id="sheetTotal">٠ ريال</span></div>
+    <p class="note-unpriced" id="unpricedNote" hidden>يوجد أصناف بدون سعر في القائمة، يؤكد البائع سعرها معك.</p>
+    <div class="field">
+      <label for="custName">الاسم</label>
+      <input id="custName" type="text" autocomplete="name" placeholder="اسمك لنناديك عند جاهزية الطلب">
+    </div>
+    <div class="field">
+      <label for="custNote">ملاحظات على الطلب</label>
+      <textarea id="custNote" placeholder="مثال: بدون فلفل، أو وقت الاستلام"></textarea>
+    </div>
+    <a class="btn-main" id="waLink" href="https://wa.me/" target="_blank" rel="noopener">أرسل الطلب عبر واتساب</a>
+    <p class="hint">يفتح واتساب والرسالة جاهزة. اضغط إرسال هناك لتأكيد طلبك.</p>
+    <button type="button" class="btn-clear" id="clearCart">إفراغ الطلب</button>
+  </div>
+</div>
+
+<script>
+document.documentElement.lang = 'ar';
+document.documentElement.dir = 'rtl';
+
+// رقم واتساب العربة بالصيغة الدولية بدون + أو أصفار، مثال: 9665XXXXXXXX
+const WHATSAPP_NUMBER = "";
+
+const MENU = [
+  { id: 'fatayer', title: 'الفطائر', items: [
+    { id: 'f1', name: 'فطيرة سادة', price: 1 },
+    { id: 'f2', name: 'فطيرة سمسم', price: 2 },
+    { id: 'f3', name: 'فطيرة جبن', price: 2 },
+    { id: 'f4', name: 'فطيرة بيض', price: 2 },
+    { id: 'f5', name: 'فطيرة بيض مع جبن', price: 3 },
+    { id: 'f6', name: 'فطيرة دبل بيض', price: 3 }
+  ]},
+  { id: 'pastry', title: 'يغمش ومعجنات', items: [
+    { id: 'p1', name: 'يغمش', price: 2 },
+    { id: 'p2', name: 'مثلثات جبن', price: null },
+    { id: 'p3', name: 'سمبوسة لحم', price: null },
+    { id: 'p4', name: 'سمبوسة خضار', price: null },
+    { id: 'p5', name: 'كرواسون جبن', price: null }
+  ]},
+  { id: 'sand', title: 'السندوتشات', items: [
+    { id: 's1', name: 'سندوتش جبن سائل', price: 2 },
+    { id: 's2', name: 'سندوتش جبن مقشور', price: 2 },
+    { id: 's3', name: 'سندوتش كبدة', price: 3 },
+    { id: 's4', name: 'سندوتش بيض', price: 2 }
+  ]},
+  { id: 'tea', title: 'الشاي والكرك', items: [
+    { id: 't1', name: 'شاي أحمر', price: 1 },
+    { id: 't2', name: 'شاي بالنعناع', price: 1 },
+    { id: 't3', name: 'شاي كرك', price: 2 }
+  ]},
+  { id: 'drinks', title: 'المياه والعصائر', items: [
+    { id: 'd1', name: 'مياه', price: 1 },
+    { id: 'd2', name: 'عصير برتقال', price: 2 },
+    { id: 'd3', name: 'ليمون بالنعناع', price: 2 },
+    { id: 'd4', name: 'عصير مانجو', price: 2 }
+  ]}
+];
+
+const ALL = MENU.flatMap(c => c.items);
+const BY_ID = Object.fromEntries(ALL.map(i => [i.id, i]));
+const cart = {};
+
+const $ = id => document.getElementById(id);
+const priceText = i => i.price == null ? 'السعر عند الطلب' : i.price + ' ريال';
+
+function stepperHTML(i, q) {
+  return '<div class="step"' + (q ? '' : ' hidden') + '>' +
+    '<button type="button" data-act="dec" data-id="' + i.id + '" aria-label="إنقاص ' + i.name + '">−</button>' +
+    '<output>' + q + '</output>' +
+    '<button type="button" data-act="inc" data-id="' + i.id + '" aria-label="زيادة ' + i.name + '">+</button>' +
+  '</div>';
+}
+
+function renderMenu() {
+  $('chips').innerHTML = MENU.map(c => '<button type="button" class="chip" data-go="' + c.id + '">' + c.title + '</button>').join('');
+  $('menu').innerHTML = MENU.map(c =>
+    '<section class="section" id="sec-' + c.id + '" aria-labelledby="h-' + c.id + '">' +
+      '<h2 id="h-' + c.id + '">' + c.title + '</h2>' +
+      '<ul class="items">' + c.items.map(i =>
+        '<li class="item" data-item="' + i.id + '">' +
+          '<div class="info"><span class="name">' + i.name + '</span><span class="price' + (i.price == null ? ' ask' : '') + '">' + priceText(i) + '</span></div>' +
+          '<div class="ctl"><button type="button" class="btn-add" data-act="inc" data-id="' + i.id + '" aria-label="أضف ' + i.name + '">أضف</button>' + stepperHTML(i, 0) + '</div>' +
+        '</li>').join('') +
+      '</ul>' +
+    '</section>').join('');
+  // Two balanced columns on wide screens: 11 rows each (fatayer + pastry | sandwiches + tea + drinks)
+  const secs = Array.from($('menu').children);
+  const a = document.createElement('div');
+  const b = document.createElement('div');
+  a.className = b.className = 'col';
+  secs.slice(0, 2).forEach(s => a.appendChild(s));
+  secs.slice(2).forEach(s => b.appendChild(s));
+  $('menu').append(a, b);
+}
+
+function totals() {
+  let count = 0, sum = 0, unpriced = false;
+  for (const id in cart) {
+    const q = cart[id]; if (!q) continue;
+    const i = BY_ID[id];
+    count += q;
+    if (i.price == null) unpriced = true; else sum += i.price * q;
+  }
+  return { count, sum, unpriced };
+}
+
+function totalText(t) {
+  return t.sum + ' ريال' + (t.unpriced ? ' + أصناف بسعر يؤكد' : '');
+}
+
+function buildMessage() {
+  const t = totals();
+  const name = $('custName').value.trim();
+  const note = $('custNote').value.trim();
+  const rows = ALL.filter(i => cart[i.id]).map(i =>
+    '• ' + i.name + ' × ' + cart[i.id] + (i.price == null ? ' (السعر يؤكد)' : ' = ' + (i.price * cart[i.id]) + ' ريال'));
+  const parts = ['طلب جديد من صفحة خفايف'];
+  if (name) parts.push('الاسم: ' + name);
+  parts.push('', ...rows, '', 'الإجمالي: ' + totalText(t));
+  if (note) parts.push('ملاحظات: ' + note);
+  return parts.join('\n');
+}
+
+function updateWaLink() {
+  const num = WHATSAPP_NUMBER.replace(/\D/g, '');
+  $('waLink').href = 'https://wa.me/' + num + '?text=' + encodeURIComponent(buildMessage());
+}
+
+function renderSheet() {
+  const ids = ALL.filter(i => cart[i.id]);
+  $('lines').innerHTML = ids.map(i =>
+    '<li class="line"><div class="info"><span class="name">' + i.name + '</span><span class="price' + (i.price == null ? ' ask' : '') + '">' + priceText(i) + '</span></div>' +
+    stepperHTML(i, cart[i.id]) + '</li>').join('');
+  $('lines').querySelectorAll('.step').forEach(s => s.hidden = false);
+  const t = totals();
+  $('sheetTotal').textContent = totalText(t);
+  $('unpricedNote').hidden = !t.unpriced;
+}
+
+function refresh() {
+  const t = totals();
+  document.querySelectorAll('li[data-item]').forEach(li => {
+    const q = cart[li.dataset.item] || 0;
+    li.querySelector('.btn-add').hidden = q > 0;
+    const st = li.querySelector('.step');
+    st.hidden = q === 0;
+    st.querySelector('output').textContent = q;
+  });
+  $('bar').hidden = t.count === 0;
+  $('barCount').textContent = t.count + (t.count === 1 ? ' صنف' : ' أصناف');
+  $('barTotal').textContent = totalText(t);
+  if (!$('overlay').hidden) {
+    if (t.count === 0) closeSheet(); else renderSheet();
+  }
+  updateWaLink();
+}
+
+function setQty(id, delta) {
+  const q = Math.max(0, Math.min(50, (cart[id] || 0) + delta));
+  if (q) cart[id] = q; else delete cart[id];
+  refresh();
+}
+
+function openSheet() {
+  renderSheet();
+  updateWaLink();
+  $('overlay').hidden = false;
+  $('sheetTitle').focus();
+}
+function closeSheet() {
+  $('overlay').hidden = true;
+  $('openSheet').focus();
+}
+
+document.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]');
+  if (act) {
+    const id = act.dataset.id;
+    const wasZero = !(cart[id] || 0);
+    setQty(id, act.dataset.act === 'inc' ? 1 : -1);
+    if (wasZero && act.dataset.act === 'inc') {
+      const li = document.querySelector('li[data-item="' + id + '"] [data-act="inc"].btn-add');
+      const plus = document.querySelector('li[data-item="' + id + '"] .step [data-act="inc"]');
+      if (plus && li && li.hidden) plus.focus();
+    }
+    return;
+  }
+  const go = e.target.closest('[data-go]');
+  if (go) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('sec-' + go.dataset.go).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    return;
+  }
+  if (e.target === $('overlay')) closeSheet();
+});
+
+$('openSheet').addEventListener('click', openSheet);
+$('closeSheet').addEventListener('click', closeSheet);
+$('clearCart').addEventListener('click', () => { for (const k in cart) delete cart[k]; refresh(); });
+$('custName').addEventListener('input', updateWaLink);
+$('custNote').addEventListener('input', updateWaLink);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('overlay').hidden) closeSheet(); });
+
+renderMenu();
+refresh();
+</script>
+
+</body></html>
